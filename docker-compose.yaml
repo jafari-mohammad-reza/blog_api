@@ -3,7 +3,7 @@ networks:
   app-network:
     driver: bridge
 services:
-  db:
+  main_postgres:
     image: postgres
     container_name: main_postgres
     restart: always

@@ -1,21 +1,27 @@
-import { Module } from '@nestjs/common';
+import {BadRequestException, Module} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import {ConfigModule, ConfigService} from "@nestjs/config"
 import {TypeOrmModule} from "@nestjs/typeorm";
+import { UserModule } from './user/user.module';
+import {UserEntity} from "./user/models/user.entity";
+import { AuthModule } from './auth/auth.module';
+import {ThrottlerModule} from "@nestjs/throttler";
 @Module({
   imports: [
       ConfigModule.forRoot({isGlobal:true }),
       TypeOrmModule.forRoot({
           type:"postgres",
-          host:"localhost",
-          port:5432,
-          database:process.env.DATA_BASE,
-          username:process.env.POSTGRES_USER,
-          password:process.env.POSTGRES_PASSWORD,
-          entities : [__dirname + "../**/*.entity{.ts,.js}"],
-          synchronize:process.env.MODE != "production"
+          url:`postgresql://admin:admin@localhost:5432/Blog_App`,
+          entities : [UserEntity],
+          synchronize:true
       }),
+      ThrottlerModule.forRoot({
+          ttl:60,
+          limit:10,
+      }),
+    UserModule,
+      AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
