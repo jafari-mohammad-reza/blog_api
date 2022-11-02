@@ -1,4 +1,4 @@
-import {IsEmail, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, Length} from "class-validator";
+import {IsEmail, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, Length, Matches} from "class-validator";
 import {Exclude} from "class-transformer";
 import {UserRole} from "../models/user.interface";
 import {ApiBody, ApiHeader, ApiProperty} from "@nestjs/swagger";

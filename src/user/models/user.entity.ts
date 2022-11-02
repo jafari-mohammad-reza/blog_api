@@ -19,6 +19,8 @@ export class UserEntity extends BaseEntity{
     refresh_token:string;
     @Column({type:"int",name:"resetPassword_attempts",default:0})
     resetPassword_attempts:number;
+    @Column({type:"boolean",name:"isVerified",default:false})
+    isVerified:boolean;
     // @OneToMany(type => BlogEntryEntity, blogEntryEntity => blogEntryEntity.author)
     // blogEntries: BlogEntryEntity[];
     //

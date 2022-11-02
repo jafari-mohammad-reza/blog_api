@@ -3,16 +3,20 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import {join} from "path"
 import {JwtModule, JwtService} from "@nestjs/jwt";
-
+import {TypeOrmModule} from "@nestjs/typeorm";
+import {UserEntity} from "../user/models/user.entity";
+import {MailService} from "../mail/mail.service";
+import * as fs from "fs";
 @Module({
   imports : [
       JwtModule.register({
-        signOptions: {expiresIn:"100s",algorithm:"RS256"},
-        publicKey:join(__dirname,'..','..','jwtRS256.key.pub'),
-        privateKey:join(__dirname,'..','..','jwtRS256.key')
+        signOptions: {algorithm:"RS256"},
+        publicKey:fs.readFileSync(join(__dirname,"..","..","jwtRS256.key.pub")),
+        privateKey:fs.readFileSync(join(__dirname,"..","..","jwtRS256.key"))
       }),
+      TypeOrmModule.forFeature([UserEntity]),
   ],
   controllers: [AuthController],
-  providers: [AuthService]
+  providers: [AuthService,MailService]
 })
 export class AuthModule {}

@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import {UserEntity} from "./user/models/user.entity";
 import { AuthModule } from './auth/auth.module';
 import {ThrottlerModule} from "@nestjs/throttler";
+import { MailModule } from './mail/mail.module';
 @Module({
   imports: [
       ConfigModule.forRoot({isGlobal:true }),
@@ -21,7 +22,8 @@ import {ThrottlerModule} from "@nestjs/throttler";
           limit:10,
       }),
     UserModule,
-      AuthModule
+      AuthModule,
+      MailModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -13,6 +13,7 @@ export interface User {
     resetPassword_attempts?: number;
     role?: UserRole;
     username: string;
+    isVerified?:boolean;
     // blogEntries?: BlogEntry[];
 }
 
