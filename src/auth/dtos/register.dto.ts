@@ -1,6 +1,6 @@
 import {IsEmail, IsString, Length, Matches} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
-import {Match} from "../../decorators/match/match.decorator";
+import {Match} from "../../decorators/match.decorator";
 
 export class RegisterDto{
     @IsString()

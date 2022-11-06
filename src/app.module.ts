@@ -1,6 +1,4 @@
-import {BadRequestException, Module} from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import {BadRequestException, MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
 import {ConfigModule, ConfigService} from "@nestjs/config"
 import {TypeOrmModule} from "@nestjs/typeorm";
 import { UserModule } from './user/user.module';
@@ -8,6 +6,9 @@ import {UserEntity} from "./user/models/user.entity";
 import { AuthModule } from './auth/auth.module';
 import {ThrottlerModule} from "@nestjs/throttler";
 import { MailModule } from './mail/mail.module';
+import {CurrentUserMiddleware} from "./middlewares/current-user/current-user.middleware";
+import {JwtService} from "@nestjs/jwt";
+
 @Module({
   imports: [
       ConfigModule.forRoot({isGlobal:true }),
@@ -21,11 +22,16 @@ import { MailModule } from './mail/mail.module';
           ttl:60,
           limit:10,
       }),
+      TypeOrmModule.forFeature([UserEntity]),
     UserModule,
       AuthModule,
       MailModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+    providers:[JwtService]
+
 })
-export class AppModule {}
+export class AppModule implements NestModule{
+    configure(consumer: MiddlewareConsumer): any {
+        consumer.apply(CurrentUserMiddleware).forRoutes("auth")
+    }
+}

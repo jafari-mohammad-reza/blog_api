@@ -25,6 +25,10 @@ export class AuthService {
     async verifyToken(token:string){
         return await this.jwtService.verifyAsync(token,{algorithms:["RS256"]})
     }
+    async findByToken(token:string) : Promise<UserEntity[]>{
+        const encoded = await this.verifyToken(token)
+        return await this.repository.findBy(encoded)
+    }
 
     async login(loginDto: LoginDto): Promise<{access_token: string, refresh_token: string}> {
         const {email, password, rememberMe} = loginDto
@@ -34,7 +38,6 @@ export class AuthService {
         if (!existUser.isVerified) throw new BadRequestException("Please verify your account first by the link we sent to your email.")
         const access_token = await this.jwtService.signAsync(existUser.email)
         const refresh_token = await this.jwtService.signAsync(existUser.id.toString())
-        await this.repository.update(existUser.id, {access_token, refresh_token})
         return {access_token, refresh_token}
     }
 
@@ -96,12 +99,5 @@ export class AuthService {
             password: newHashedPassword,
             resetPassword_attempts: newResetPasswordAttempts
         })
-    }
-     async logout(access_token:string){
-        const email =   await this.verifyToken(access_token)
-         const existUser = await this.repository.findOneBy({email})
-         if(existUser){
-             await this.repository.update(existUser.id , {access_token:"",refresh_token:""})
-         }
-    }
-}
+    }}
+

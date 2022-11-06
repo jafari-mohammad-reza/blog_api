@@ -17,6 +17,7 @@ async function bootstrap() {
     crossOriginResourcePolicy:false,
   }))
   app.use(cookieParser())
+
   const config = new DocumentBuilder()
       .setTitle('Blog App API')
       .setDescription('Blog App API description')

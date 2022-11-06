@@ -1,18 +1,22 @@
-import {Body, Controller, Get, Param, Post, Req, Res} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Req, Res, UseGuards, UseInterceptors} from '@nestjs/common';
 import {ApiBody, ApiConsumes, ApiParam, ApiTags} from "@nestjs/swagger";
 import {LoginDto} from "./dtos/login.dto";
 import {AuthService} from "./auth.service";
-import {Response} from "express";
+import {Request, Response} from "express";
 import {RegisterDto} from "./dtos/register.dto";
-import {CreateUserDto} from "../user/dtos/create-user.dto";
-import {empty} from "rxjs";
 import {ResetPasswordDto} from "./dtos/reset-password.dto";
 import {ForgotPasswordDto} from "./dtos/forgot-password.dto";
+import {CurrentUser} from "../decorators/current-user.decorator";
+import {User, UserRole} from "../user/models/user.interface";
+import {hasRoles} from "../decorators/has-role.decorator";
+import {RoleGuard} from "../guards/role-guard/role.guard";
+
 
 @Controller('auth')
 @ApiTags("Authentication")
 export class AuthController {
     constructor(private readonly authService:AuthService) {
+
     }
     @Post("/login")
     @ApiBody({type: LoginDto})
@@ -55,10 +59,17 @@ export class AuthController {
         })
     }
     @Get("/logout")
+
      async logout(@Res({passthrough:true}) response : Response ,@Req() request:Request){
-        await this.authService.logout(request.headers["cookie"].split("access_token=")[1].split(";")[0])
         return response.status(200).clearCookie("access_token").clearCookie("refresh_token").json({
             message :"You logged out successfully."
         })
+    }
+    // @ts-ignore
+    @Get("who")
+    @hasRoles(UserRole.ADMIN)
+    @UseGuards(RoleGuard)
+    who(@CurrentUser() user:User){
+        return user
     }
 }

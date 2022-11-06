@@ -1,12 +1,12 @@
-import {Body, Controller, Delete, Get, Param, Post, Put} from '@nestjs/common';
-import {Serialize} from "../interceptors/serialization/serialization.interceptor";
+import {Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UseInterceptors} from '@nestjs/common';
+import {Serialize} from "../interceptors/serialization.interceptor";
 import UserDto from "./dtos/user.dto";
 import {UserService} from "./user.service";
 import {CreateUserDto} from "./dtos/create-user.dto";
 import {UpdateUserDto} from "./dtos/update-user.dto";
 import {ApiBody, ApiConsumes, ApiTags} from "@nestjs/swagger";
 import {from, map, switchMap} from "rxjs";
-import {UpdateResult} from "typeorm";
+
 
 @Controller('user')
 @Serialize(UserDto)
@@ -16,6 +16,7 @@ export class UserController {
     }
 
     @Get()
+    // @hasRoles(UserRole.ADMIN)
     getAllUsers() {
         return this.userService.findAll()
     }

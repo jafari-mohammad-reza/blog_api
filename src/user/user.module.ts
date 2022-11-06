@@ -11,6 +11,7 @@ import {MailService} from "../mail/mail.service";
 @Module({
   imports:[TypeOrmModule.forFeature([UserEntity]),AuthModule],
   controllers: [UserController],
-  providers: [UserService,AuthService,JwtService,MailService]
+  providers: [UserService,AuthService,JwtService,MailService],
+  exports:[UserService]
 })
 export class UserModule {}

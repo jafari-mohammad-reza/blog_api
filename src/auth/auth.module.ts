@@ -11,12 +11,12 @@ import * as fs from "fs";
   imports : [
       JwtModule.register({
         signOptions: {algorithm:"RS256"},
-        publicKey:fs.readFileSync(join(__dirname,"..","..","jwtRS256.key.pub")),
-        privateKey:fs.readFileSync(join(__dirname,"..","..","jwtRS256.key"))
+        publicKey:fs.readFileSync(join(__dirname,"..","..","jwtRS256.key.pub"),{encoding:'utf-8'}),
+        privateKey:fs.readFileSync(join(__dirname,"..","..","jwtRS256.key"),{encoding:'utf-8'})
       }),
       TypeOrmModule.forFeature([UserEntity]),
   ],
   controllers: [AuthController],
-  providers: [AuthService,MailService]
+  providers: [AuthService,MailService],
 })
 export class AuthModule {}

@@ -1,6 +1,6 @@
 import {CallHandler, ExecutionContext, Injectable, NestInterceptor, UseInterceptors} from '@nestjs/common';
 import {map, Observable} from 'rxjs';
-import {ClassConstructor} from "../../interfaces";
+import {ClassConstructor} from "../interfaces";
 import {plainToInstance} from "class-transformer";
 
 export function Serialize(dto : any){
