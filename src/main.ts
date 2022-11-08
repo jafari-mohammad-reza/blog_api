@@ -4,7 +4,8 @@ import {ValidationPipe} from "@nestjs/common";
 import helmet from "helmet";
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 import * as cookieParser from 'cookie-parser';
-import {RoleGuard} from "./guards/role-guard/role.guard";
+import {RoleGuard} from "./guards/role.guard";
+import {ValidUserGuard} from "./guards/valid-user.guard";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

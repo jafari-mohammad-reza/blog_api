@@ -9,7 +9,7 @@ import {ForgotPasswordDto} from "./dtos/forgot-password.dto";
 import {CurrentUser} from "../decorators/current-user.decorator";
 import {User, UserRole} from "../user/models/user.interface";
 import {hasRoles} from "../decorators/has-role.decorator";
-import {RoleGuard} from "../guards/role-guard/role.guard";
+import {RoleGuard} from "../guards/role.guard";
 
 
 @Controller('auth')

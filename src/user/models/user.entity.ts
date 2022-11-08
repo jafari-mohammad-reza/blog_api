@@ -1,5 +1,6 @@
 import {BaseEntity, BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {UserRole} from "./user.interface";
+import {BlogEntity} from "../../blog/models/blog.entity";
 
 @Entity()
 export class UserEntity extends BaseEntity{
@@ -19,9 +20,9 @@ export class UserEntity extends BaseEntity{
     isVerified:boolean;
     @Column({type:"varchar",name:"profileImage",nullable:true})
     profileImage:string;
-    // @OneToMany(type => BlogEntryEntity, blogEntryEntity => blogEntryEntity.author)
-    // blogEntries: BlogEntryEntity[];
-    //
+    @OneToMany(type => BlogEntity, blogEntity => blogEntity.author)
+    blogs:  BlogEntity[];
+
     @BeforeInsert()
     emailToLowerCase() {
         this.email = this.email.toLowerCase();

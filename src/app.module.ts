@@ -8,6 +8,8 @@ import {ThrottlerModule} from "@nestjs/throttler";
 import {MailModule} from './mail/mail.module';
 import {CurrentUserMiddleware} from "./middlewares/current-user/current-user.middleware";
 import {JwtService} from "@nestjs/jwt";
+import { BlogModule } from './blog/blog.module';
+import {BlogEntity} from "./blog/models/blog.entity";
 
 @Module({
   imports: [
@@ -15,7 +17,7 @@ import {JwtService} from "@nestjs/jwt";
       TypeOrmModule.forRoot({
           type:"postgres",
           url:`postgresql://admin:admin@localhost:5432/Blog_App`,
-          entities : [UserEntity],
+          entities : [UserEntity,BlogEntity],
           synchronize:true
       }),
       ThrottlerModule.forRoot({
@@ -25,7 +27,8 @@ import {JwtService} from "@nestjs/jwt";
       TypeOrmModule.forFeature([UserEntity]),
     UserModule,
       AuthModule,
-      MailModule
+      MailModule,
+      BlogModule
   ],
     providers:[JwtService]
 

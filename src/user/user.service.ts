@@ -42,11 +42,6 @@ export class UserService {
         )
     }
 
-    async findBy(user: Partial<User>): Promise<UserEntity> {
-        const foundedUser = await this.repository.findOneBy(user)
-        if (!foundedUser) throw new NotFoundException("there is no user with this credentials")
-        return foundedUser
-    }
 
      async paginate(options:IPaginationOptions) {
          console.log(await paginate<UserEntity>(this.repository , options))

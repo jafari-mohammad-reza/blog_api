@@ -19,13 +19,14 @@ import {UpdateUserDto} from "./dtos/update-user.dto";
 import {ApiBody, ApiConsumes, ApiParam, ApiQuery, ApiTags} from "@nestjs/swagger";
 import {map, switchMap} from "rxjs";
 
-import {RoleGuard} from "../guards/role-guard/role.guard";
+import {RoleGuard} from "../guards/role.guard";
 import {hasRoles} from "../decorators/has-role.decorator";
 import {User, UserRole} from "./models/user.interface";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {defaultStorage} from "../conf/DiskStorage";
 import {CurrentUser} from "../decorators/current-user.decorator";
 import {UploadProfileDto} from "./dtos/upload-profile.dto";
+import {ValidUserGuard} from "../guards/valid-user.guard";
 @UseGuards(RoleGuard)
 @Controller('user')
 @Serialize(UserDto)
@@ -71,6 +72,7 @@ export class UserController {
     @ApiParam({name:"id",required:true,type:"string"})
     @ApiConsumes("application/x-www-form-urlencoded")
     @hasRoles(UserRole.USER,UserRole.CHIEFEDITOR,UserRole.ADMIN)
+    @UseGuards(ValidUserGuard)
     async updateUser(@Param("id") id: string, @Body() body: UpdateUserDto) {
         return (await this.userService.updateOne(id ,body)).pipe(map(result => {
             return "Updated successfully"

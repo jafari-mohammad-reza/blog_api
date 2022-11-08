@@ -1,5 +1,6 @@
 import {Entity} from "typeorm";
 import {UserEntity} from "./user.entity";
+import {BlogEntity} from "../../blog/models/blog.entity";
 
 
 export interface User {
@@ -13,7 +14,7 @@ export interface User {
     username: string;
     isVerified?:boolean;
     profileImage?:string;
-    // blogEntries?: BlogEntry[];
+    blogs?: BlogEntity[];
 }
 
 
