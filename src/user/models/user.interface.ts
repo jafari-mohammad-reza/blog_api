@@ -12,6 +12,7 @@ export interface User {
     role?: UserRole;
     username: string;
     isVerified?:boolean;
+    profileImage?:string;
     // blogEntries?: BlogEntry[];
 }
 

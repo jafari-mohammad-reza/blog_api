@@ -26,5 +26,7 @@ export class UpdateUserDto{
     @IsOptional()
     @ApiProperty({required:false,name:"resetPassword_attempts",type:"integer"})
     resetPassword_attempts:number;
-
+    @IsOptional()
+    @ApiProperty({required:false,name:"file",type:"string",format:"binary"})
+    file:Express.Multer.File;
 }

@@ -1,9 +1,10 @@
-import { NestFactory } from '@nestjs/core';
+import {NestFactory, Reflector} from '@nestjs/core';
 import { AppModule } from './app.module';
 import {ValidationPipe} from "@nestjs/common";
 import helmet from "helmet";
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 import * as cookieParser from 'cookie-parser';
+import {RoleGuard} from "./guards/role-guard/role.guard";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,7 +18,7 @@ async function bootstrap() {
     crossOriginResourcePolicy:false,
   }))
   app.use(cookieParser())
-
+  app.useGlobalGuards(new RoleGuard(app.get(Reflector)));
   const config = new DocumentBuilder()
       .setTitle('Blog App API')
       .setDescription('Blog App API description')

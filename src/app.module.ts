@@ -1,11 +1,11 @@
-import {BadRequestException, MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
-import {ConfigModule, ConfigService} from "@nestjs/config"
+import {MiddlewareConsumer, Module, NestModule, RequestMethod} from '@nestjs/common';
+import {ConfigModule} from "@nestjs/config"
 import {TypeOrmModule} from "@nestjs/typeorm";
-import { UserModule } from './user/user.module';
+import {UserModule} from './user/user.module';
 import {UserEntity} from "./user/models/user.entity";
-import { AuthModule } from './auth/auth.module';
+import {AuthModule} from './auth/auth.module';
 import {ThrottlerModule} from "@nestjs/throttler";
-import { MailModule } from './mail/mail.module';
+import {MailModule} from './mail/mail.module';
 import {CurrentUserMiddleware} from "./middlewares/current-user/current-user.middleware";
 import {JwtService} from "@nestjs/jwt";
 
@@ -32,6 +32,6 @@ import {JwtService} from "@nestjs/jwt";
 })
 export class AppModule implements NestModule{
     configure(consumer: MiddlewareConsumer): any {
-        consumer.apply(CurrentUserMiddleware).forRoutes("auth")
+        consumer.apply(CurrentUserMiddleware).forRoutes("user",{path:"/auth",method:RequestMethod.GET})
     }
 }

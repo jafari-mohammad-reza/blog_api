@@ -17,6 +17,8 @@ export class UserEntity extends BaseEntity{
     resetPassword_attempts:number;
     @Column({type:"boolean",name:"isVerified",default:false})
     isVerified:boolean;
+    @Column({type:"varchar",name:"profileImage",nullable:true})
+    profileImage:string;
     // @OneToMany(type => BlogEntryEntity, blogEntryEntity => blogEntryEntity.author)
     // blogEntries: BlogEntryEntity[];
     //

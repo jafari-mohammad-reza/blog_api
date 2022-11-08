@@ -65,11 +65,5 @@ export class AuthController {
             message :"You logged out successfully."
         })
     }
-    // @ts-ignore
-    @Get("who")
-    @hasRoles(UserRole.ADMIN)
-    @UseGuards(RoleGuard)
-    who(@CurrentUser() user:User){
-        return user
-    }
+
 }

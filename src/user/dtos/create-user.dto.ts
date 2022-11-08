@@ -17,4 +17,7 @@ export class CreateUserDto{
     @Length(8,16)
     @ApiProperty({type:"string",required:true,name:"password",example:"StrongPassword"})
     password:string;
+    @IsOptional()
+    @ApiProperty({required:false,name:"file",type:"string",format:"binary"})
+    file:Express.Multer.File;
 }
