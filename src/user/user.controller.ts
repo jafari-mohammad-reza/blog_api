@@ -70,10 +70,12 @@ export class UserController {
     @Put(":id")
     @ApiBody({type: UpdateUserDto})
     @ApiParam({name:"id",required:true,type:"string"})
-    @ApiConsumes("application/x-www-form-urlencoded")
+    @ApiConsumes("multipart/form-data")
     @hasRoles(UserRole.USER,UserRole.CHIEFEDITOR,UserRole.ADMIN)
     @UseGuards(ValidUserGuard)
-    async updateUser(@Param("id") id: string, @Body() body: UpdateUserDto) {
+    @UseInterceptors(FileInterceptor("file" ,{storage:defaultStorage}))
+    async updateUser(@Param("id") id: string, @Body() body: UpdateUserDto,@UploadedFile() file:Express.Multer.File) {
+        body.profileImage = file.originalname
         return (await this.userService.updateOne(id ,body)).pipe(map(result => {
             return "Updated successfully"
         }))

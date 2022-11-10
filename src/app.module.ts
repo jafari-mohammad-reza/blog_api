@@ -8,8 +8,9 @@ import {ThrottlerModule} from "@nestjs/throttler";
 import {MailModule} from './mail/mail.module';
 import {CurrentUserMiddleware} from "./middlewares/current-user/current-user.middleware";
 import {JwtService} from "@nestjs/jwt";
-import { BlogModule } from './blog/blog.module';
+import {BlogModule} from './blog/blog.module';
 import {BlogEntity} from "./blog/models/blog.entity";
+import {CloudinaryModule} from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -28,13 +29,14 @@ import {BlogEntity} from "./blog/models/blog.entity";
     UserModule,
       AuthModule,
       MailModule,
-      BlogModule
+      BlogModule,
+      CloudinaryModule,
   ],
     providers:[JwtService]
 
 })
 export class AppModule implements NestModule{
     configure(consumer: MiddlewareConsumer): any {
-        consumer.apply(CurrentUserMiddleware).forRoutes("user",{path:"/auth",method:RequestMethod.GET})
+        consumer.apply(CurrentUserMiddleware).forRoutes("user",{path:"auth",method:RequestMethod.GET},"blog")
     }
 }

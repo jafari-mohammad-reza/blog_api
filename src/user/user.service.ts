@@ -57,12 +57,14 @@ export class UserService {
             }
         }
         return this.findById(id).pipe(map((user: User) => {
-            if (user.profileImage) {
-                const filePath = join(process.cwd(), "uploads", "profileImages", user.profileImage);
-                if (fs.existsSync(filePath)) {
-                    fs.unlinkSync(filePath);
-                }
-            }
+           if(attr.profileImage){
+               if (user.profileImage) {
+                   const filePath = join(process.cwd(), "uploads", "profileImages", user.profileImage);
+                   if (fs.existsSync(filePath)) {
+                       fs.unlinkSync(filePath);
+                   }
+               }
+           }
             const newUser = Object.assign(user, attr)
             return from(this.repository.update(id, newUser)).pipe(map(result => {
                 if (result.affected === 0) {

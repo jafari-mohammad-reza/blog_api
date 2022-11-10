@@ -29,4 +29,7 @@ export class UpdateUserDto{
     @IsOptional()
     @ApiProperty({required:false,name:"file",type:"string",format:"binary"})
     file:Express.Multer.File;
+    @IsOptional()
+    @ApiProperty({required:false,name:"profileImage",type:"string"})
+    profileImage:string;
 }

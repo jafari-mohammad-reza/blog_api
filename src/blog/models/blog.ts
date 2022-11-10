@@ -1,4 +1,4 @@
-export interface BlogInterface{
+export interface Blog {
     id?:string;
     title?:string;
     slug?:string;
