@@ -1,5 +1,5 @@
 import {
-    Body,
+    Body, CacheInterceptor, CacheTTL,
     Controller,
     Delete,
     Get,
@@ -7,7 +7,7 @@ import {
     Post,
     Put,
     Query,
-     UploadedFile,
+    UploadedFile,
     UseGuards,
     UseInterceptors
 } from '@nestjs/common';
@@ -51,6 +51,8 @@ export class UserController {
     @Get(":id")
     @ApiParam({name:"id",required:true,type:"string"})
     @hasRoles(UserRole.ADMIN)
+    @UseInterceptors(CacheInterceptor)
+    @CacheTTL(60)
     getUserById(@Param("id") id: string) {
         return this.userService.findById(id)
     }
@@ -85,6 +87,7 @@ export class UserController {
     @Delete(":id")
     @ApiParam({name:"id",required:true,type:"string"})
     @hasRoles(UserRole.ADMIN)
+
     async deleteUser(@Param("id") id: string) {
         return (await this.userService.deleteOne(id)).pipe(map(result => {
             return "Deleted successfully"

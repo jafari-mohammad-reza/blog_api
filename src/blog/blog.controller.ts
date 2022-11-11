@@ -1,6 +1,7 @@
 import {
-    Body,
-    Controller, Delete,
+    Body, CacheInterceptor, CacheTTL,
+    Controller,
+    Delete,
     FileTypeValidator,
     Get,
     MaxFileSizeValidator,
@@ -37,7 +38,9 @@ export class BlogController {
     }
 
     @Get("published")
-    async getPublished(@Query("user") userID: string) {
+    @UseInterceptors(CacheInterceptor)
+    @CacheTTL(120)
+    async getPublished() {
         return this.blogService.findPublished()
     }
 
