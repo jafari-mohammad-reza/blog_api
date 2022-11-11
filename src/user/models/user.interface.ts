@@ -1,12 +1,9 @@
-import {Entity} from "typeorm";
-import {UserEntity} from "./user.entity";
+
 import {BlogEntity} from "../../blog/models/blog.entity";
 
 
 export interface User {
     email: string;
-    followers?: string[];
-    followings?: string[];
     id?: number;
     password: string;
     resetPassword_attempts?: number;

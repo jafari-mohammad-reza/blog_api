@@ -19,8 +19,8 @@ export class BlogEntity extends BaseEntity{
     publishedDate:Date;
     @Column({type:"boolean",default:true,name:"isPublished"})
     isPublished:boolean;
-    @Column({type:"int",name:"likes",default:0})
-    likes:number;
+    @Column({type:"int",array:true,name:"likes",default:[]})
+    likes:number[];
     @Column({type:"simple-json",nullable:true,name:"headerImage"})
     headerImage:{url:string,publicId:string};
     @ManyToOne(type => UserEntity,user => user.id)

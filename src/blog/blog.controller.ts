@@ -62,6 +62,11 @@ export class BlogController {
             return value
         }))
     }
+    @Post(":id")
+    @ApiParam({name: "id", required: true, type: "string"})
+    async likeBlog(@CurrentUser() user:User,@Param("id") id:string) {
+        return await this.blogService.likeOrDislikeOne(id,user)
+    }
 
     @Put(":id")
     @ApiBody({type: UpdateBlogDto, required: true})
@@ -74,6 +79,7 @@ export class BlogController {
             , new FileTypeValidator({fileType: ".png"})
         ]
     })) file: Express.Multer.File) {
+        console.log(id)
         body.file = file
         return await this.blogService.updateOne(id,body)
     }

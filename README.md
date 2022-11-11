@@ -8,4 +8,5 @@
 * Postgresql
 * Redis 
 * Open Api
-* S3 Bucket
+* Cloudinary
+* Multer

@@ -10,6 +10,7 @@ import slugify from "slugify";
 import {UserEntity} from "../user/models/user.entity";
 import {CreateBlogDto} from "./dtos/create-blog.dto";
 import {UpdateBlogDto} from "./dtos/update-blog.dto";
+import {use} from "passport";
 
 @Injectable()
 export class BlogService {
@@ -63,7 +64,15 @@ export class BlogService {
         await this.cloudinaryService.removeImage(blog.headerImage.publicId)
         return await this.blogRepository.delete(id)
     }
-    likeOrDislikeOne(id:string){}
+    async likeOrDislikeOne(id:string,user:User){
+        let {likes} = await this.findById(id)
+        if(likes.includes(user.id)){
+            likes = likes.filter(id => id !== user.id)
+        }else{
+            likes.push(user.id)
+        }
+        return await this.blogRepository.update(id,{likes})
+    }
     async uploadImageToCloudinary(file: Express.Multer.File) {
         return await this.cloudinaryService.uploadImage(file).catch(() => {
             throw new BadRequestException('Invalid file type.');

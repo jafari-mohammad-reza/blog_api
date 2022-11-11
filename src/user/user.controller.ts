@@ -27,6 +27,7 @@ import {defaultStorage} from "../conf/DiskStorage";
 import {CurrentUser} from "../decorators/current-user.decorator";
 import {UploadProfileDto} from "./dtos/upload-profile.dto";
 import {ValidUserGuard} from "../guards/valid-user.guard";
+import {UserEntity} from "./models/user.entity";
 @UseGuards(RoleGuard)
 @Controller('user')
 @Serialize(UserDto)

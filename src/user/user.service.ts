@@ -9,6 +9,8 @@ import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate"
 import * as fs from "fs";
 import path, {join} from "path";
 import {log} from "util";
+import useRealTimers = jest.useRealTimers;
+import {deflateRaw} from "zlib";
 
 @Injectable()
 export class UserService {
@@ -96,4 +98,5 @@ export class UserService {
         }
         await this.repository.update(id, {profileImage});
     }
+
 }

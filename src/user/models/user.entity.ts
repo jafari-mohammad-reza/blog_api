@@ -1,4 +1,4 @@
-import {BaseEntity, BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, BeforeInsert, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {UserRole} from "./user.interface";
 import {BlogEntity} from "../../blog/models/blog.entity";
 
@@ -22,7 +22,6 @@ export class UserEntity extends BaseEntity{
     profileImage:string;
     @OneToMany(type => BlogEntity, blogEntity => blogEntity.author)
     blogs:  BlogEntity[];
-
     @BeforeInsert()
     emailToLowerCase() {
         this.email = this.email.toLowerCase();
