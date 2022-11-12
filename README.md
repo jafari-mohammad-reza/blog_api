@@ -10,3 +10,4 @@
 * Open Api
 * Cloudinary
 * Multer
+* Google OAuth2

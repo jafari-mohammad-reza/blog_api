@@ -6,6 +6,8 @@ import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 import * as cookieParser from 'cookie-parser';
 import {RoleGuard} from "./guards/role.guard";
 import {ValidUserGuard} from "./guards/valid-user.guard";
+import * as passport from "passport";
+import {Strategy} from "passport-google-oauth20";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

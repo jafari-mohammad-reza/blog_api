@@ -6,10 +6,7 @@ import {Request, Response} from "express";
 import {RegisterDto} from "./dtos/register.dto";
 import {ResetPasswordDto} from "./dtos/reset-password.dto";
 import {ForgotPasswordDto} from "./dtos/forgot-password.dto";
-import {CurrentUser} from "../decorators/current-user.decorator";
-import {User, UserRole} from "../user/models/user.interface";
-import {hasRoles} from "../decorators/has-role.decorator";
-import {RoleGuard} from "../guards/role.guard";
+import {GoogleAuthGuard} from "./utils/GoogleAuth.Guard";
 
 
 @Controller('auth')
@@ -59,11 +56,22 @@ export class AuthController {
         })
     }
     @Get("/logout")
-
-     async logout(@Res({passthrough:true}) response : Response ,@Req() request:Request){
+     async logout(@Res({passthrough:false}) response : Response ,@Req() request:Request){
         return response.status(200).clearCookie("access_token").clearCookie("refresh_token").json({
             message :"You logged out successfully."
         })
+    }
+
+    @Get("google/login")
+    @UseGuards(GoogleAuthGuard)
+    googleLogin(){
+        return "Google Authentication"
+    }
+    @Get("google/redirect")
+    @UseGuards(GoogleAuthGuard)
+    googleRedirect(@Req() request:Request , @Res({passthrough:true}) response : Response){
+         response.cookie("access_toke",request.user["accessToken"]).cookie("refresh_toke",request.user["refreshToken"]);
+         return "Logged in"
     }
 
 }

@@ -8,7 +8,8 @@ import {UserEntity} from "../user/models/user.entity";
 import {Repository} from "typeorm";
 import {MailService} from "../mail/mail.service";
 import {LoginDto} from "./dtos/login.dto";
-import {IncomingHttpHeaders} from "http";
+import {Profile} from "passport-google-oauth20";
+
 @Injectable()
 export class AuthService {
     constructor(private readonly jwtService: JwtService, @InjectRepository(UserEntity) private readonly repository: Repository<UserEntity>, private readonly mailService: MailService) {
@@ -99,5 +100,23 @@ export class AuthService {
             password: newHashedPassword,
             resetPassword_attempts: newResetPasswordAttempts
         })
-    }}
+    }
+
+    async validateOAuthUser(profile: Profile) {
+        const email = profile.emails[0].value
+        const existUser = await this.repository.findOneBy({email})
+        if (existUser) {
+            return existUser
+        } else {
+            console.log(profile.photos[0].value)
+            const createdUser = await this.repository.create({
+                email,
+                profileImage: profile.photos[0].value,
+                isVerified: true
+            })
+            return await this.repository.save(createdUser)
+        }
+
+    }
+}
 

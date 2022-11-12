@@ -6,11 +6,11 @@ import {BlogEntity} from "../../blog/models/blog.entity";
 export class UserEntity extends BaseEntity{
     @PrimaryGeneratedColumn({type:"int",name:"Id"})
     id:number;
-    @Column({type:"varchar",name:"userName",unique:true  })
+    @Column({type:"varchar",name:"userName",unique:true , nullable:true })
     username:string;
     @Column({type:"varchar",name:"email",unique:true})
     email:string;
-    @Column({type:"varchar",name:"password"})
+    @Column({type:"varchar",name:"password",nullable:true})
     password:string;
     @Column({type: 'enum', enum: UserRole, default: UserRole.USER})
     role: UserRole;

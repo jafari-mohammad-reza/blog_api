@@ -1,4 +1,4 @@
-import {CacheModule, Module} from '@nestjs/common';
+import {CacheInterceptor, CacheModule, Module} from '@nestjs/common';
 import {BlogController} from './blog.controller';
 import {BlogService} from './blog.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
@@ -11,7 +11,7 @@ import {ValidAuthorGuard} from "../guards/valid-author.guard";
 @Module({
   imports:[TypeOrmModule.forFeature([BlogEntity]),AuthModule,UserModule,CloudinaryModule],
   controllers: [BlogController],
-  providers: [BlogService,ValidAuthorGuard],
+  providers: [BlogService,ValidAuthorGuard,CacheInterceptor],
   exports:[ValidAuthorGuard]
 })
 export class BlogModule {}

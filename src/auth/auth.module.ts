@@ -7,6 +7,8 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {UserEntity} from "../user/models/user.entity";
 import {MailService} from "../mail/mail.service";
 import * as fs from "fs";
+import {GoogleStrategy} from "./utils/GoogleStrategy";
+import {PassportModule} from "@nestjs/passport";
 @Module({
   imports : [
       JwtModule.register({
@@ -17,6 +19,6 @@ import * as fs from "fs";
       TypeOrmModule.forFeature([UserEntity]),
   ],
   controllers: [AuthController],
-  providers: [AuthService,MailService],
+  providers: [AuthService,MailService,GoogleStrategy],
 })
 export class AuthModule {}

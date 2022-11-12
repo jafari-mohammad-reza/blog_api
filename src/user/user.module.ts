@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import {CacheInterceptor, Module} from '@nestjs/common';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
@@ -13,7 +13,7 @@ import {BlogEntity} from "../blog/models/blog.entity";
 @Module({
   imports:[TypeOrmModule.forFeature([UserEntity]),AuthModule],
   controllers: [UserController],
-  providers: [UserService,AuthService,JwtService,MailService,ValidUserGuard],
+  providers: [UserService,AuthService,JwtService,MailService,ValidUserGuard,CacheInterceptor],
   exports:[UserService,ValidUserGuard]
 })
 export class UserModule {}
