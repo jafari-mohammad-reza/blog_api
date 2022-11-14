@@ -42,7 +42,6 @@ export class UserController {
     @hasRoles(UserRole.ADMIN)
     async getAllUsers(@Query("page") page=1,@Query("limit") limit=10) {
         limit = limit > 100 ? 100 : limit
-        console.log(limit,page)
         return await this.userService.paginate({page,limit,route:`${process.env.APPLICATION_ADDRESS}/user`}).then(result => {
             return result.items
         })

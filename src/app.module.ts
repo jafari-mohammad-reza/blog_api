@@ -19,9 +19,13 @@ import {PassportModule} from "@nestjs/passport";
       ConfigModule.forRoot({isGlobal: true}),
       TypeOrmModule.forRoot({
           type: "postgres",
-          url: process.env.POSTGRES_URL,
-          entities: [UserEntity, BlogEntity],
-          synchronize: true
+          host:process.env.POSTGRES_DB_HOST,
+          port:Number(process.env.POSTGRES_DB_PORT),
+          database:process.env.POSTGRES_DB_NAME,
+          username:process.env.POSTGRES_USER,
+          password:process.env.POSTGRES_PASSWORD,
+          entities:  [UserEntity,BlogEntity],
+          synchronize: process.env.MODE !== "production"
       }),
       ThrottlerModule.forRoot({ttl: 60, limit: 20}),
       TypeOrmModule.forFeature([UserEntity]),

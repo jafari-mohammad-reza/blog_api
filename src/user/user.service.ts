@@ -46,7 +46,6 @@ export class UserService {
 
 
      async paginate(options:IPaginationOptions) {
-         console.log(await paginate<UserEntity>(this.repository , options))
          return await paginate<UserEntity>(this.repository , options)
     }
 
@@ -86,6 +85,9 @@ export class UserService {
             }));
         });
 
+    }
+    async deleteByEmail(email:string){
+        await this.repository.delete({email})
     }
     async uploadProfile(id:string|number,profileImage:string){
         const user = await this.repository.findOneBy({id : Number(id)})

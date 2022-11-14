@@ -3,9 +3,38 @@ networks:
   app-network:
     driver: bridge
 services:
-  main_postgres:
+  api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: Blog_API
+    environment:
+       MODE: production
+       POSTGRES_USER: admin
+       POSTGRES_PASSWORD: admin
+       POSTGRES_DB_PREFIX: db
+       POSTGRES_DB_NAME: Blog_App
+       POSTGRES_DB_HOST: postgres
+       POSTGRES_DB_PORT: 5432
+       REDIS_HOST: redis
+       REDIS_PORT: 6379
+    env_file:
+      - ./.env
+    ports:
+      - '3000:3000'
+    networks:
+      - app-network
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - .:/home/node
+      - /home/node/node_modules
+    restart: unless-stopped
+
+  postgres:
     image: postgres
-    container_name: main_postgres
+    container_name: postgres
     restart: always
     networks:
       - app-network
@@ -15,7 +44,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
     volumes:
-      - main_postgres:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin4_container
@@ -29,18 +58,24 @@ services:
       - pgadmin-data:/var/lib/pgadmin
     networks:
       - app-network
+    depends_on:
+      - postgres
+    command:
+      - CREATE DB Blog_App
   redis:
     image: redis:alpine
     command:
       - redis-server
     ports:
       - "6379:6379"
-    container_name: main_Redis
+    container_name: redis
+    networks:
+      - app-network
     volumes:
       - redis-data:/data
       - redis-conf:/usr/local/etc/redis/redis.conf
 volumes:
-  main_postgres:
+  postgres:
   pgadmin-data:
   redis-data:
   redis-conf:

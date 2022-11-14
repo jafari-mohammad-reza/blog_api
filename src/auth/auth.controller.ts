@@ -6,7 +6,9 @@ import {Request, Response} from "express";
 import {RegisterDto} from "./dtos/register.dto";
 import {ResetPasswordDto} from "./dtos/reset-password.dto";
 import {ForgotPasswordDto} from "./dtos/forgot-password.dto";
-import {GoogleAuthGuard} from "./utils/GoogleAuth.Guard";
+    import {GoogleAuthGuard} from "./utils/GoogleAuth.Guard";
+import { paginateRawAndEntities } from "nestjs-typeorm-paginate";
+import { Throttle } from "@nestjs/throttler";
 
 
 @Controller('auth')
@@ -18,11 +20,12 @@ export class AuthController {
     @Post("/login")
     @ApiBody({type: LoginDto})
     @ApiConsumes("application/x-www-form-urlencoded")
+    @Throttle(3,60)
     async login(@Body() body:LoginDto, @Res({passthrough:false}) res:Response){
         const {access_token,refresh_token} = await this.authService.login(body)
         return res.status(200)
-            .cookie("access_token",access_token,{httpOnly:true})
-            .cookie("refresh_token",refresh_token,{httpOnly:true})
+            .cookie("access_token",access_token,{httpOnly:true,sameSite:true, maxAge: body.rememberMe ? Number(new Date(Date.now() + 1000 * 60 * 60 * 24 * 30)) : Number(new Date(Date.now() + 1000 * 60 * 60 * 24))})
+            .cookie("refresh_token",refresh_token,{httpOnly:true,sameSite:true, maxAge:Number(new Date(Date.now() + 1000 * 60 * 60 * 24 * 356))})
             .json({message:"You logged in successfully."})
     }
     @Post("/register")
@@ -41,6 +44,7 @@ export class AuthController {
     @Post("/forget_password")
     @ApiConsumes("application/x-www-form-urlencoded")
     @ApiBody({type:ForgotPasswordDto})
+    @Throttle(1,120)
     async forgotPassword(@Body() body :ForgotPasswordDto){
         await this.authService.sendForgotPasswordLink(body.email)
         return "We sent you a link include a link to reset your password"
@@ -49,6 +53,7 @@ export class AuthController {
     @ApiParam({name:"token",type:"string",required:true})
     @ApiBody({type:ResetPasswordDto})
     @ApiConsumes("application/x-www-form-urlencoded")
+    @Throttle(4,60)
     async resetPassword(@Body() body : ResetPasswordDto,@Param("token") token:string,@Res({passthrough:true}) res:Response){
         await this.authService.resetPassword(token,body.password)
         return res.status(200).clearCookie("access_token").clearCookie("refresh_token").json({
@@ -64,14 +69,18 @@ export class AuthController {
 
     @Get("google/login")
     @UseGuards(GoogleAuthGuard)
+    @Throttle(2,60)
     googleLogin(){
         return "Google Authentication"
     }
     @Get("google/redirect")
     @UseGuards(GoogleAuthGuard)
-    googleRedirect(@Req() request:Request , @Res({passthrough:true}) response : Response){
-         response.cookie("access_toke",request.user["accessToken"]).cookie("refresh_toke",request.user["refreshToken"]);
-         return "Logged in"
+    async googleRedirect(@Req() request:Request , @Res({passthrough:true}) response : Response){
+        const   {accessToken ,refreshToken} = await this.authService.validateOAuthUser(request.user)
+        request.user = null
+          response.cookie("access_token",accessToken,{httpOnly:true,sameSite:true, maxAge: Number(new Date(Date.now() + 1000 * 60 * 60 * 24 * 30))})
+          .cookie("refresh_token",refreshToken,{httpOnly:true,sameSite:true, maxAge:Number(new Date(Date.now() + 1000 * 60 * 60 * 24 * 356))})
+        return response.redirect("/api-docs")
     }
 
 }

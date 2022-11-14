@@ -24,8 +24,14 @@ export class BlogService {
             select: {author: {id: true, username: true}}
         })
     }
-    async findPublished(){
-        return await this.blogRepository.find({where:{isPublished:true} , relations:["author"],select:{author:{id:true,username:true}}} )
+    async findPublished(take:number=30,skip:number=0){
+        return await this.blogRepository.find({where:{isPublished:true} ,
+            relations:["author"],select:{author:{id:true,username:true}} ,
+            order:{updated:{direction:"asc"}},
+            take,
+            skip,
+        } )
+
     }
     async findById(id:string) : Promise<any> {
         const cachedBlog = await this.cachingService.get(id)

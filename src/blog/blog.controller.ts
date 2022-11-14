@@ -24,6 +24,7 @@ import {map} from "rxjs";
 import {UpdateBlogDto} from "./dtos/update-blog.dto";
 import {ValidAuthorGuard} from "../guards/valid-author.guard";
 import {UserEntity} from "../user/models/user.entity";
+import { Throttle } from "@nestjs/throttler";
 
 @Controller('blog')
 @ApiTags("Blogs")
@@ -33,6 +34,7 @@ export class BlogController {
 
     @Get()
     @ApiQuery({name: "user", required: false, type: "string", description: "id of user/author"})
+    @Throttle(20,60)
     async getAll(@Query("user") userID: string) {
         return this.blogService.findAll(userID && Number(userID))
     }
@@ -40,12 +42,15 @@ export class BlogController {
     @Get("published")
     @UseInterceptors(CacheInterceptor)
     @CacheTTL(120)
-    async getPublished() {
-        return this.blogService.findPublished()
+    @Throttle(20,60)
+    async getPublished(@Query("take") take:string,@Query("skip") skip:string) {
+        const takeValue = Number(take) > 100 ? 100 : Number(take)
+        return this.blogService.findPublished(takeValue,Number(skip))
     }
 
     @Get(":id")
     @ApiParam({name: "id", required: true, type: "string"})
+    @Throttle(20,60)
     async getById(@Param("id") id: string) {
         return this.blogService.findById(id)
     }
@@ -59,7 +64,6 @@ export class BlogController {
             , new FileTypeValidator({fileType: ".png"})
         ]
     })) file: Express.Multer.File) {
-        console.log(user)
         body.file = file
         return this.blogService.createOne(user, body).pipe(map(value => {
             return value
@@ -82,7 +86,6 @@ export class BlogController {
             , new FileTypeValidator({fileType: ".png"})
         ]
     })) file: Express.Multer.File) {
-        console.log(id)
         body.file = file
         return await this.blogService.updateOne(id,body)
     }

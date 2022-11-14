@@ -8,7 +8,7 @@ import {UserEntity} from "../user/models/user.entity";
 import {Repository} from "typeorm";
 import {MailService} from "../mail/mail.service";
 import {LoginDto} from "./dtos/login.dto";
-import {Profile} from "passport-google-oauth20";
+
 
 @Injectable()
 export class AuthService {
@@ -25,10 +25,6 @@ export class AuthService {
 
     async verifyToken(token:string){
         return await this.jwtService.verifyAsync(token,{algorithms:["RS256"]})
-    }
-    async findByToken(token:string) : Promise<UserEntity[]>{
-        const encoded = await this.verifyToken(token)
-        return await this.repository.findBy(encoded)
     }
 
     async login(loginDto: LoginDto): Promise<{access_token: string, refresh_token: string}> {
@@ -61,7 +57,6 @@ export class AuthService {
     }
 
     async verifyAccount(token: string): Promise<void> {
-        console.log(token)
         const encoded = await this.verifyToken(token)
         const existUser = await this.repository.findOneBy({email:encoded})
         if (!existUser) {
@@ -102,20 +97,32 @@ export class AuthService {
         })
     }
 
-    async validateOAuthUser(profile: Profile) {
-        const email = profile.emails[0].value
-        const existUser = await this.repository.findOneBy({email})
-        if (existUser) {
-            return existUser
-        } else {
-            console.log(profile.photos[0].value)
-            const createdUser = await this.repository.create({
-                email,
-                profileImage: profile.photos[0].value,
-                isVerified: true
-            })
-            return await this.repository.save(createdUser)
+    async validateOAuthUser(user) {
+        if (!user) {
+            throw new BadRequestException('Unauthenticated');
         }
+
+        const existUser = await this.repository.findOneBy({email:user.email});
+
+        if (!existUser) {
+
+            const newUser =  await this.repository.save(user);
+
+            const accessToken= this.jwtService.signAsync({
+                email: newUser.email,
+            });
+            const refreshToken = this.jwtService.signAsync({
+                id: newUser.id,
+            });
+            return  {accessToken ,refreshToken}
+        }
+
+        const accessToken = await this.jwtService.signAsync(existUser.email)
+
+        const refreshToken = await this.jwtService.signAsync(existUser.id.toString())
+
+        return  {accessToken ,refreshToken}
+
 
     }
 }
